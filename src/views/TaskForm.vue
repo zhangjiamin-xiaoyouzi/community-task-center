@@ -254,68 +254,82 @@
             </el-tooltip>
           </el-form-item>
 
-          <!-- 奖励类型配置 -->
-          <el-form-item label="奖励类型" prop="rewardType">
-            <el-select v-model="formData.rewardType" placeholder="请选择奖励类型" style="width: 100%">
-              <el-option label="优惠券" value="coupon" />
-              <el-option label="现金红包" value="cash" />
-              <el-option label="抽奖券" value="lottery" />
-              <el-option label="积分" value="points" />
-              <el-option label="盲盒" value="blindbox" />
-              <el-option label="流量券" value="traffic" />
-              <el-option label="实物奖品" value="physical" />
-              <el-option label="会员权益" value="vip" />
-            </el-select>
-          </el-form-item>
+          <!-- 奖励配置 -->
+          <div class="reward-list">
+            <div v-for="(reward, index) in formData.rewards" :key="index" class="reward-item">
+              <div class="reward-header">
+                <span class="reward-title">奖励 {{ index + 1 }}</span>
+                <el-button 
+                  v-if="formData.rewards.length > 1" 
+                  type="danger" 
+                  size="small" 
+                  :icon="Delete" 
+                  circle 
+                  @click="removeReward(index)"
+                />
+              </div>
+              
+              <el-form-item label="奖励类型" :prop="`rewards.${index}.type`" :rules="[{ required: true, message: '请选择奖励类型', trigger: 'change' }]">
+                <el-select v-model="reward.type" placeholder="请选择奖励类型" style="width: 100%">
+                  <el-option label="优惠券" value="coupon" />
+                  <el-option label="现金红包" value="cash" />
+                  <el-option label="抽奖券" value="lottery" />
+                  <el-option label="积分" value="points" />
+                  <el-option label="盲盒" value="blindbox" />
+                  <el-option label="流量券" value="traffic" />
+                  <el-option label="实物奖品" value="physical" />
+                  <el-option label="会员权益" value="vip" />
+                </el-select>
+              </el-form-item>
 
-          <el-form-item label="奖励数量" prop="rewardAmount">
-            <el-input-number v-model="formData.rewardAmount" :min="0.01" :precision="2" style="width: 200px" />
-          </el-form-item>
+              <el-form-item label="奖励数量">
+                <el-input-number v-model="reward.amount" :min="1" :max="99999" style="width: 200px" />
+              </el-form-item>
 
-          <el-form-item v-if="formData.rewardType === 'coupon'" label="优惠券选择">
-            <el-select v-model="formData.couponId" placeholder="请选择优惠券" filterable style="width: 100%">
-              <el-option label="新人专享优惠券" value="1" />
-              <el-option label="满减优惠券" value="2" />
-              <el-option label="折扣优惠券" value="3" />
-            </el-select>
-          </el-form-item>
+              <el-form-item v-if="reward.type === 'coupon'" label="优惠券选择">
+                <el-select v-model="reward.couponId" placeholder="请选择优惠券" filterable style="width: 100%">
+                  <el-option label="新人专享优惠券" value="1" />
+                  <el-option label="满减优惠券" value="2" />
+                  <el-option label="折扣优惠券" value="3" />
+                </el-select>
+              </el-form-item>
 
-          <el-form-item v-if="formData.rewardType === 'points'" label="积分数量">
-            <el-input-number v-model="formData.pointsAmount" :min="1" :max="99999" style="width: 200px" />
-          </el-form-item>
+              <el-form-item v-if="reward.type === 'points'" label="积分数量">
+                <el-input-number v-model="reward.pointsAmount" :min="1" :max="99999" style="width: 200px" />
+              </el-form-item>
 
-          <el-form-item v-if="formData.rewardType === 'blindbox'" label="盲盒类型">
-            <el-select v-model="formData.blindboxType" placeholder="请选择盲盒类型" style="width: 100%">
-              <el-option label="普通盲盒" value="normal" />
-              <el-option label="稀有盲盒" value="rare" />
-              <el-option label="限定盲盒" value="limited" />
-            </el-select>
-          </el-form-item>
+              <el-form-item v-if="reward.type === 'blindbox'" label="盲盒类型">
+                <el-select v-model="reward.blindboxType" placeholder="请选择盲盒类型" style="width: 100%">
+                  <el-option label="普通盲盒" value="normal" />
+                  <el-option label="稀有盲盒" value="rare" />
+                  <el-option label="限定盲盒" value="limited" />
+                </el-select>
+              </el-form-item>
 
-          <el-form-item v-if="formData.rewardType === 'traffic'" label="流量券配置">
-            <el-select v-model="formData.trafficCouponId" placeholder="请选择流量券" filterable style="width: 100%">
-              <el-option label="基础流量券(1000曝光)" value="traffic_1000" />
-              <el-option label="标准流量券(5000曝光)" value="traffic_5000" />
-              <el-option label="高级流量券(10000曝光)" value="traffic_10000" />
-              <el-option label="超级流量券(50000曝光)" value="traffic_50000" />
-            </el-select>
-          </el-form-item>
+              <el-form-item v-if="reward.type === 'traffic'" label="流量券配置">
+                <el-select v-model="reward.trafficCouponId" placeholder="请选择流量券" filterable style="width: 100%">
+                  <el-option label="基础流量券(1000曝光)" value="traffic_1000" />
+                  <el-option label="标准流量券(5000曝光)" value="traffic_5000" />
+                  <el-option label="高级流量券(10000曝光)" value="traffic_10000" />
+                  <el-option label="超级流量券(50000曝光)" value="traffic_50000" />
+                </el-select>
+              </el-form-item>
 
-          <el-form-item label="奖励库存">
-            <el-input-number v-model="formData.rewardStock" :min="0" :max="999999" style="width: 200px" />
-            <span class="text-muted" style="margin-left: 8px;">0表示不限</span>
-            <el-tooltip content="设置奖励的总库存，0表示不限制" placement="top">
-              <el-icon style="margin-left: 4px; color: #909399;"><QuestionFilled /></el-icon>
-            </el-tooltip>
-          </el-form-item>
+              <el-form-item label="奖励库存">
+                <el-input-number v-model="reward.stock" :min="0" :max="999999" style="width: 200px" />
+                <span class="text-muted" style="margin-left: 8px;">0表示不限</span>
+              </el-form-item>
 
-          <el-form-item label="每日发放上限">
-            <el-input-number v-model="formData.dailyLimit" :min="0" :max="99999" style="width: 200px" />
-            <span class="text-muted" style="margin-left: 8px;">0表示不限</span>
-            <el-tooltip content="设置每天最多发放的奖励数量" placement="top">
-              <el-icon style="margin-left: 4px; color: #909399;"><QuestionFilled /></el-icon>
-            </el-tooltip>
-          </el-form-item>
+              <el-form-item label="每日发放上限">
+                <el-input-number v-model="reward.dailyLimit" :min="0" :max="99999" style="width: 200px" />
+                <span class="text-muted" style="margin-left: 8px;">0表示不限</span>
+              </el-form-item>
+            </div>
+
+            <el-button type="primary" :icon="Plus" @click="addReward" style="margin-top: 16px;">
+              添加奖励
+            </el-button>
+          </div>
         </div>
 
         <!-- 任务通知配置 -->
@@ -470,14 +484,18 @@ const formData = ref({
   excludeTags: [],
   rewardExpire: '7days',
   rewardDelivery: 'auto',
-  rewardType: '',
-  rewardAmount: 0.01,
-  couponId: '',
-  pointsAmount: 10,
-  blindboxType: 'normal',
-  trafficCouponId: '',
-  rewardStock: 0,
-  dailyLimit: 0,
+  rewards: [
+    {
+      type: '',
+      amount: 1,
+      couponId: '',
+      pointsAmount: 10,
+      blindboxType: 'normal',
+      trafficCouponId: '',
+      stock: 0,
+      dailyLimit: 0
+    }
+  ],
   notifyValue: 1,
   notifyUnit: 'hour',
   description: '',
@@ -522,6 +540,26 @@ const excludeForm = reactive({
   type: '',
   value: ''
 })
+
+// 奖励管理
+const addReward = () => {
+  formData.value.rewards.push({
+    type: '',
+    amount: 1,
+    couponId: '',
+    pointsAmount: 10,
+    blindboxType: 'normal',
+    trafficCouponId: '',
+    stock: 0,
+    dailyLimit: 0
+  })
+}
+
+const removeReward = (index) => {
+  if (formData.value.rewards.length > 1) {
+    formData.value.rewards.splice(index, 1)
+  }
+}
 
 // 添加目标标签
 const addTargetTag = () => {
@@ -599,14 +637,18 @@ const loadEditData = () => {
       excludeTags: [],
       rewardExpire: '7days',
       rewardDelivery: 'auto',
-      rewardType: 'blindbox',
-      rewardAmount: 1,
-      couponId: '',
-      pointsAmount: 10,
-      blindboxType: 'normal',
-      trafficCouponId: '',
-      rewardStock: 10000,
-      dailyLimit: 500,
+      rewards: [
+        {
+          type: 'blindbox',
+          amount: 1,
+          couponId: '',
+          pointsAmount: 10,
+          blindboxType: 'normal',
+          trafficCouponId: '',
+          stock: 10000,
+          dailyLimit: 500
+        }
+      ],
       notifyValue: 1,
       notifyUnit: 'day',
       description: '完成评论任务即可获得盲盒奖励，每日最多可获得1个盲盒',
@@ -620,3 +662,25 @@ onMounted(() => {
   loadEditData()
 })
 </script>
+
+<style scoped>
+.reward-card {
+  background: #f8f9fa;
+  border: 1px solid #e4e7ed;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.reward-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.reward-title {
+  font-weight: 500;
+  color: #303133;
+}
+</style>
