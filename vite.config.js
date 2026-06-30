@@ -2,8 +2,8 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 
-export default defineConfig({
-  base: '/community-task-center/',
+export default defineConfig(({ mode }) => ({
+  base: mode === 'production' ? '/community-task-center/' : '/',
   plugins: [vue()],
   resolve: {
     alias: {
@@ -19,4 +19,4 @@ export default defineConfig({
       }
     }
   }
-})
+}))

@@ -262,6 +262,7 @@
               <el-option label="抽奖券" value="lottery" />
               <el-option label="积分" value="points" />
               <el-option label="盲盒" value="blindbox" />
+              <el-option label="流量券" value="traffic" />
               <el-option label="实物奖品" value="physical" />
               <el-option label="会员权益" value="vip" />
             </el-select>
@@ -288,6 +289,15 @@
               <el-option label="普通盲盒" value="normal" />
               <el-option label="稀有盲盒" value="rare" />
               <el-option label="限定盲盒" value="limited" />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item v-if="formData.rewardType === 'traffic'" label="流量券配置">
+            <el-select v-model="formData.trafficCouponId" placeholder="请选择流量券" filterable style="width: 100%">
+              <el-option label="基础流量券(1000曝光)" value="traffic_1000" />
+              <el-option label="标准流量券(5000曝光)" value="traffic_5000" />
+              <el-option label="高级流量券(10000曝光)" value="traffic_10000" />
+              <el-option label="超级流量券(50000曝光)" value="traffic_50000" />
             </el-select>
           </el-form-item>
 
@@ -465,6 +475,7 @@ const formData = ref({
   couponId: '',
   pointsAmount: 10,
   blindboxType: 'normal',
+  trafficCouponId: '',
   rewardStock: 0,
   dailyLimit: 0,
   notifyValue: 1,
@@ -593,6 +604,7 @@ const loadEditData = () => {
       couponId: '',
       pointsAmount: 10,
       blindboxType: 'normal',
+      trafficCouponId: '',
       rewardStock: 10000,
       dailyLimit: 500,
       notifyValue: 1,
